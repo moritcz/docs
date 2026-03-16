@@ -1,7 +1,8 @@
 // ── Data Layer ──
 const STORAGE_KEY = 'expense_tracker_data';
+const CATEGORIES_KEY = 'expense_tracker_categories';
 
-const CATEGORIES = {
+const DEFAULT_CATEGORIES = {
   expense: [
     { id: 'food', emoji: '\ud83c\udf5c', name: '\u0415\u0434\u0430', color: '#e16259' },
     { id: 'transport', emoji: '\ud83d\ude8c', name: '\u0422\u0440\u0430\u043d\u0441\u043f\u043e\u0440\u0442', color: '#e8a44a' },
@@ -20,6 +21,18 @@ const CATEGORIES = {
   ],
 };
 
+const EMOJI_PICKER = [
+  '\ud83d\udcb0','\ud83d\udcb8','\ud83d\udcb3','\ud83c\udfe6','\ud83d\uded2','\ud83c\udf5c','\ud83c\udf55','\u2615',
+  '\ud83d\ude97','\ud83d\ude8c','\u2708\ufe0f','\u26fd','\ud83c\udfe0','\ud83d\udee0\ufe0f','\ud83d\udca1','\ud83d\udcf1',
+  '\ud83d\udc8a','\ud83c\udfcb\ufe0f','\ud83c\udfac','\ud83c\udfae','\ud83d\udcda','\ud83c\udf81','\ud83d\udc55','\u2702\ufe0f',
+  '\ud83d\udc36','\ud83c\udf33','\ud83c\udfd6\ufe0f','\ud83c\udfb5','\ud83d\udcbb','\ud83d\udce6','\u2b50','\u2764\ufe0f',
+];
+
+const COLOR_PICKER = [
+  '#e16259','#e8a44a','#e67e22','#9b59b6','#2ecc71','#3498db',
+  '#1abc9c','#4dab9a','#2eaadc','#95a5a6','#e74c3c','#34495e',
+];
+
 function loadData() {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -32,8 +45,28 @@ function saveData(transactions) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
 }
 
+function loadCustomCategories() {
+  try {
+    return JSON.parse(localStorage.getItem(CATEGORIES_KEY)) || { expense: [], income: [] };
+  } catch {
+    return { expense: [], income: [] };
+  }
+}
+
+function saveCustomCategories(cats) {
+  localStorage.setItem(CATEGORIES_KEY, JSON.stringify(cats));
+}
+
+let customCategories = loadCustomCategories();
+
+function getCategories(type) {
+  return [...DEFAULT_CATEGORIES[type], ...customCategories[type]];
+}
+
 function findCategory(id) {
-  return [...CATEGORIES.expense, ...CATEGORIES.income].find((c) => c.id === id) || CATEGORIES.expense[7];
+  const all = [...DEFAULT_CATEGORIES.expense, ...DEFAULT_CATEGORIES.income,
+    ...customCategories.expense, ...customCategories.income];
+  return all.find((c) => c.id === id) || DEFAULT_CATEGORIES.expense[7];
 }
 
 function formatMoney(n) {
@@ -371,19 +404,30 @@ function switchTab(tab) {
   render();
 }
 
-// ── Add Transaction Modal ──
+// ── Add / Edit Transaction Modal ──
 let addType = 'expense';
 let addCategory = '';
 let addAmount = '';
 let addNote = '';
 let addDate = new Date().toISOString().slice(0, 10);
+let editingTxId = null;
 
-function openAddModal() {
-  addType = 'expense';
-  addCategory = CATEGORIES.expense[0].id;
-  addAmount = '';
-  addNote = '';
-  addDate = new Date().toISOString().slice(0, 10);
+function openAddModal(existingTx) {
+  if (existingTx) {
+    editingTxId = existingTx.id;
+    addType = existingTx.isIncome ? 'income' : 'expense';
+    addCategory = existingTx.categoryId;
+    addAmount = String(existingTx.amount);
+    addNote = existingTx.note || '';
+    addDate = new Date(existingTx.date).toISOString().slice(0, 10);
+  } else {
+    editingTxId = null;
+    addType = 'expense';
+    addCategory = getCategories('expense')[0].id;
+    addAmount = '';
+    addNote = '';
+    addDate = new Date().toISOString().slice(0, 10);
+  }
   renderAddModal();
   document.getElementById('modal-add').classList.add('open');
 }
@@ -393,22 +437,23 @@ function closeAddModal() {
 }
 
 function renderAddModal() {
-  const cats = CATEGORIES[addType];
+  const cats = getCategories(addType);
+  const isEdit = editingTxId !== null;
   document.getElementById('modal-add-content').innerHTML = `
     <div class="modal-handle"></div>
     <div class="modal-header">
-      <div class="modal-title">\u041d\u043e\u0432\u0430\u044f \u0437\u0430\u043f\u0438\u0441\u044c</div>
+      <div class="modal-title">${isEdit ? '\u0420\u0435\u0434\u0430\u043a\u0442\u0438\u0440\u043e\u0432\u0430\u0442\u044c' : '\u041d\u043e\u0432\u0430\u044f \u0437\u0430\u043f\u0438\u0441\u044c'}</div>
       <button class="modal-close" onclick="closeAddModal()">\u2715</button>
     </div>
 
     <div class="form-section">
       <div class="type-toggle">
         <button class="${addType === 'expense' ? 'active is-expense' : ''}"
-          onclick="addType='expense';addCategory=CATEGORIES.expense[0].id;renderAddModal()">
+          onclick="addType='expense';addCategory=getCategories('expense')[0].id;renderAddModal()">
           \u0420\u0430\u0441\u0445\u043e\u0434
         </button>
         <button class="${addType === 'income' ? 'active is-income' : ''}"
-          onclick="addType='income';addCategory=CATEGORIES.income[0].id;renderAddModal()">
+          onclick="addType='income';addCategory=getCategories('income')[0].id;renderAddModal()">
           \u0414\u043e\u0445\u043e\u0434
         </button>
       </div>
@@ -428,6 +473,10 @@ function renderAddModal() {
             <span class="label">${c.name}</span>
           </button>
         `).join('')}
+        <button class="category-btn add-cat-btn" onclick="openCategoryModal()">
+          <span class="emoji">+</span>
+          <span class="label">\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c</span>
+        </button>
       </div>
     </div>
 
@@ -444,7 +493,7 @@ function renderAddModal() {
 
     <div class="form-section">
       <button class="submit-btn ${addType}" onclick="submitTransaction()">
-        \u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c ${addType === 'expense' ? '\u0440\u0430\u0441\u0445\u043e\u0434' : '\u0434\u043e\u0445\u043e\u0434'}
+        ${isEdit ? '\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c' : '\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c ${addType === "expense" ? "\u0440\u0430\u0441\u0445\u043e\u0434" : "\u0434\u043e\u0445\u043e\u0434"}'}
       </button>
     </div>
   `;
@@ -453,17 +502,129 @@ function renderAddModal() {
 function submitTransaction() {
   const amount = parseFloat(addAmount);
   if (!amount || amount <= 0) return;
-  transactions.push({
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-    amount,
-    categoryId: addCategory,
-    isIncome: addType === 'income',
-    note: addNote.trim(),
-    date: new Date(addDate).toISOString(),
-  });
+
+  if (editingTxId) {
+    const idx = transactions.findIndex((t) => t.id === editingTxId);
+    if (idx !== -1) {
+      transactions[idx] = {
+        ...transactions[idx],
+        amount,
+        categoryId: addCategory,
+        isIncome: addType === 'income',
+        note: addNote.trim(),
+        date: new Date(addDate).toISOString(),
+      };
+    }
+  } else {
+    transactions.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      amount,
+      categoryId: addCategory,
+      isIncome: addType === 'income',
+      note: addNote.trim(),
+      date: new Date(addDate).toISOString(),
+    });
+  }
   saveData(transactions);
   closeAddModal();
   render();
+}
+
+// ── Custom Category Modal ──
+let newCatEmoji = '\ud83d\udccc';
+let newCatName = '';
+let newCatColor = '#3498db';
+
+function openCategoryModal() {
+  newCatEmoji = '\ud83d\udccc';
+  newCatName = '';
+  newCatColor = '#3498db';
+  renderCategoryModal();
+  document.getElementById('modal-category').classList.add('open');
+}
+
+function closeCategoryModal() {
+  document.getElementById('modal-category').classList.remove('open');
+}
+
+function renderCategoryModal() {
+  document.getElementById('modal-category-content').innerHTML = `
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">\u041d\u043e\u0432\u0430\u044f \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044f</div>
+      <button class="modal-close" onclick="closeCategoryModal()">\u2715</button>
+    </div>
+
+    <div class="form-section">
+      <div class="form-label">\u0418\u043a\u043e\u043d\u043a\u0430</div>
+      <div class="emoji-grid">
+        ${EMOJI_PICKER.map((e) => `
+          <button class="emoji-pick ${newCatEmoji === e ? 'active' : ''}"
+            onclick="newCatEmoji='${e}';renderCategoryModal()">${e}</button>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-label">\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435</div>
+      <input class="form-input" type="text" placeholder="\u041d\u0430\u043f\u0440\u0438\u043c\u0435\u0440: \u041f\u043e\u0434\u043f\u0438\u0441\u043a\u0438" value="${newCatName}"
+        oninput="newCatName=this.value" />
+    </div>
+
+    <div class="form-section">
+      <div class="form-label">\u0426\u0432\u0435\u0442</div>
+      <div class="color-grid">
+        ${COLOR_PICKER.map((c) => `
+          <button class="color-pick ${newCatColor === c ? 'active' : ''}"
+            style="background:${c}" onclick="newCatColor='${c}';renderCategoryModal()"></button>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px;background:var(--bg-secondary);border-radius:var(--radius)">
+        <div class="tx-icon" style="background:${newCatColor}15">${newCatEmoji}</div>
+        <span style="font-weight:500">${newCatName || '\u041f\u0440\u0435\u0434\u043f\u0440\u043e\u0441\u043c\u043e\u0442\u0440'}</span>
+      </div>
+      <button class="submit-btn ${addType}" onclick="saveNewCategory()">
+        \u0421\u043e\u0437\u0434\u0430\u0442\u044c \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044e
+      </button>
+    </div>
+
+    ${customCategories[addType].length > 0 ? `
+      <div class="form-section">
+        <div class="form-label">\u0412\u0430\u0448\u0438 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438</div>
+        ${customCategories[addType].map((c) => `
+          <div class="custom-cat-row">
+            <span>${c.emoji} ${c.name}</span>
+            <button class="custom-cat-delete" onclick="deleteCustomCategory('${c.id}')">\u2715</button>
+          </div>
+        `).join('')}
+      </div>
+    ` : ''}
+  `;
+}
+
+function saveNewCategory() {
+  if (!newCatName.trim()) return;
+  const id = 'custom_' + Date.now().toString(36);
+  customCategories[addType].push({
+    id,
+    emoji: newCatEmoji,
+    name: newCatName.trim(),
+    color: newCatColor,
+  });
+  saveCustomCategories(customCategories);
+  addCategory = id;
+  closeCategoryModal();
+  renderAddModal();
+}
+
+function deleteCustomCategory(id) {
+  customCategories.expense = customCategories.expense.filter((c) => c.id !== id);
+  customCategories.income = customCategories.income.filter((c) => c.id !== id);
+  saveCustomCategories(customCategories);
+  renderCategoryModal();
 }
 
 // ── Detail Modal ──
@@ -502,6 +663,9 @@ function showDetail(id) {
           <span>${t.note}</span>
         </div>
       ` : ''}
+      <button class="submit-btn ${t.isIncome ? 'income' : 'expense'}" onclick="editTx('${t.id}')" style="margin-bottom:8px">
+        \u0420\u0435\u0434\u0430\u043a\u0442\u0438\u0440\u043e\u0432\u0430\u0442\u044c
+      </button>
       <button class="delete-btn" onclick="deleteTx('${t.id}')">\u0423\u0434\u0430\u043b\u0438\u0442\u044c \u0437\u0430\u043f\u0438\u0441\u044c</button>
     </div>
   `;
@@ -517,6 +681,13 @@ function deleteTx(id) {
   saveData(transactions);
   closeDetail();
   render();
+}
+
+function editTx(id) {
+  const t = transactions.find((tx) => tx.id === id);
+  if (!t) return;
+  closeDetail();
+  setTimeout(() => openAddModal(t), 200);
 }
 
 // ── Export ──

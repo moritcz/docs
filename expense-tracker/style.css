@@ -486,6 +486,87 @@ body {
 .submit-btn.expense { background: var(--expense); color: #fff; }
 .submit-btn.income { background: var(--income); color: #fff; }
 
+/* ── Add Category Button ── */
+.add-cat-btn {
+  border-style: dashed !important;
+  color: var(--text-secondary);
+}
+
+.add-cat-btn .emoji {
+  font-size: 20px;
+  font-style: normal;
+  color: var(--text-light);
+}
+
+/* ── Emoji Picker ── */
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.emoji-pick {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-size: 20px;
+  cursor: pointer;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emoji-pick:hover { background: var(--bg-hover); }
+.emoji-pick.active { border-color: var(--accent); background: rgba(46,170,220,0.06); }
+
+/* ── Color Picker ── */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.color-pick {
+  aspect-ratio: 1;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.color-pick.active {
+  border-color: var(--text);
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--text);
+}
+
+/* ── Custom Category List ── */
+.custom-cat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.custom-cat-row:last-child { border-bottom: none; }
+
+.custom-cat-delete {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.custom-cat-delete:hover { color: var(--expense); }
+
 /* ── Statistics ── */
 .stat-bar-row {
   display: flex;
