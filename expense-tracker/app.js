@@ -262,6 +262,23 @@ function renderStats() {
 
     ${renderPeriodSelector()}
 
+    <div class="export-row">
+      <button class="export-btn" onclick="exportCSV()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+        CSV / Excel
+      </button>
+      <button class="export-btn" onclick="exportJSON()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16">
+          <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+        </svg>
+        JSON / Claude
+      </button>
+    </div>
+
     <div class="card">
       <div class="card-header">
         <span>\u0420\u0430\u0441\u0445\u043e\u0434\u044b \u043f\u043e \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044f\u043c</span>
@@ -500,6 +517,82 @@ function deleteTx(id) {
   saveData(transactions);
   closeDetail();
   render();
+}
+
+// ── Export ──
+function downloadFile(filename, content, mime) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportCSV() {
+  const list = filterByPeriod(transactions).sort((a, b) => new Date(a.date) - new Date(b.date));
+  if (list.length === 0) return;
+
+  const BOM = '\uFEFF';
+  const header = 'Дата;Тип;Категория;Сумма;Заметка';
+  const rows = list.map((t) => {
+    const cat = findCategory(t.categoryId);
+    const d = new Date(t.date);
+    const dateStr = d.toLocaleDateString('ru-RU');
+    const type = t.isIncome ? 'Доход' : 'Расход';
+    const amount = t.isIncome ? t.amount : -t.amount;
+    const note = (t.note || '').replace(/"/g, '""');
+    return `${dateStr};${type};${cat.name};${amount};"${note}"`;
+  });
+
+  const income = list.filter((t) => t.isIncome).reduce((s, t) => s + t.amount, 0);
+  const expense = list.filter((t) => !t.isIncome).reduce((s, t) => s + t.amount, 0);
+  rows.push('');
+  rows.push(`;;Итого доходы;${income};`);
+  rows.push(`;;Итого расходы;${-expense};`);
+  rows.push(`;;Баланс;${income - expense};`);
+
+  downloadFile(
+    `expenses_${new Date().toISOString().slice(0, 10)}.csv`,
+    BOM + header + '\n' + rows.join('\n'),
+    'text/csv;charset=utf-8'
+  );
+}
+
+function exportJSON() {
+  const list = filterByPeriod(transactions).sort((a, b) => new Date(a.date) - new Date(b.date));
+  if (list.length === 0) return;
+
+  const income = list.filter((t) => t.isIncome).reduce((s, t) => s + t.amount, 0);
+  const expense = list.filter((t) => !t.isIncome).reduce((s, t) => s + t.amount, 0);
+
+  const data = {
+    exported: new Date().toISOString(),
+    period: currentPeriod,
+    summary: {
+      total_income: income,
+      total_expense: expense,
+      balance: income - expense,
+      transaction_count: list.length,
+    },
+    transactions: list.map((t) => {
+      const cat = findCategory(t.categoryId);
+      return {
+        date: new Date(t.date).toLocaleDateString('ru-RU'),
+        type: t.isIncome ? 'income' : 'expense',
+        category: cat.name,
+        amount: t.amount,
+        note: t.note || '',
+      };
+    }),
+  };
+
+  downloadFile(
+    `expenses_${new Date().toISOString().slice(0, 10)}.json`,
+    JSON.stringify(data, null, 2),
+    'application/json;charset=utf-8'
+  );
 }
 
 // ── Init ──

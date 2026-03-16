@@ -650,6 +650,34 @@ body {
   color: var(--text);
 }
 
+/* ── Export ── */
+.export-row {
+  display: flex;
+  gap: 8px;
+  margin: 4px 16px 8px;
+}
+
+.export-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all .15s;
+}
+
+.export-btn:hover { background: var(--bg-hover); }
+.export-btn:active { background: var(--bg-active); }
+
 /* ── Scrollable ── */
 .page { display: none; flex-direction: column; flex: 1; }
 .page.active { display: flex; }
