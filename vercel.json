@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "expense-tracker/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/expense-tracker/(.*)",
+      "destination": "/expense-tracker/$1"
+    }
+  ]
+}
