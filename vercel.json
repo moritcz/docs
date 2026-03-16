@@ -1,15 +1,11 @@
 {
   "version": 2,
-  "builds": [
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
     {
-      "src": "expense-tracker/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/expense-tracker/(.*)",
-      "destination": "/expense-tracker/$1"
+      "src": "/(.*)",
+      "dest": "/expense-tracker/$1"
     }
   ]
 }
