@@ -1,35 +1,32 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "FitCRM — CRM для фитнес-клуба",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#6366F1",
+    "light": "#818CF8",
+    "dark": "#4F46E5"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Обзор проекта",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Введение",
             "pages": [
               "index",
               "quickstart",
-              "development"
+              "tech-stack"
             ]
           },
           {
-            "group": "Essentials",
+            "group": "Архитектура",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
+              "architecture/overview",
+              "architecture/database",
+              "architecture/modules"
             ]
           }
         ]
@@ -38,18 +35,49 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "API Documentation",
+            "group": "Обзор API",
             "pages": [
               "api-reference/introduction"
             ]
           },
           {
-            "group": "Endpoint Examples",
+            "group": "Клиенты",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/clients/list",
+              "api-reference/clients/get",
+              "api-reference/clients/create",
+              "api-reference/clients/update",
+              "api-reference/clients/delete"
+            ]
+          },
+          {
+            "group": "Абонементы",
+            "pages": [
+              "api-reference/memberships/list",
+              "api-reference/memberships/create",
+              "api-reference/memberships/assign"
+            ]
+          },
+          {
+            "group": "Расписание",
+            "pages": [
+              "api-reference/schedule/list",
+              "api-reference/schedule/create",
+              "api-reference/schedule/book"
+            ]
+          },
+          {
+            "group": "Тренеры",
+            "pages": [
+              "api-reference/trainers/list",
+              "api-reference/trainers/create"
+            ]
+          },
+          {
+            "group": "Платежи",
+            "pages": [
+              "api-reference/payments/list",
+              "api-reference/payments/create"
             ]
           }
         ]
@@ -58,19 +86,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
+          "anchor": "Документация",
+          "href": "/",
           "icon": "book-open-cover"
         },
         {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "API",
+          "href": "/api-reference/introduction",
+          "icon": "code"
         }
       ]
     }
@@ -82,21 +105,17 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "GitHub",
+        "href": "https://github.com"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "Демо",
+      "href": "#"
     }
   },
   "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    "socials": {}
   }
 }

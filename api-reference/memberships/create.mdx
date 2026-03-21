@@ -1,0 +1,33 @@
+---
+title: Создать тип абонемента
+description: Добавление нового типа абонемента
+---
+
+# POST /api/v1/membership-types
+
+Создаёт новый тип абонемента.
+
+## Тело запроса
+
+| Поле | Тип | Обязательное | Описание |
+|------|-----|-------------|----------|
+| `name` | string | да | Название |
+| `description` | string | нет | Описание |
+| `duration_days` | int | да | Срок действия в днях |
+| `visits_limit` | int | нет | Лимит посещений (null = безлимит) |
+| `price` | decimal | да | Цена |
+
+## Пример запроса
+
+```bash
+curl -X POST "https://your-domain.com/api/v1/membership-types" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Безлимит 90 дней",
+    "description": "Безлимитное посещение на 3 месяца",
+    "duration_days": 90,
+    "visits_limit": null,
+    "price": 9000.00
+  }'
+```

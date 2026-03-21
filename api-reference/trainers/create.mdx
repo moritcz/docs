@@ -1,0 +1,33 @@
+---
+title: Добавить тренера
+description: Регистрация нового тренера
+---
+
+# POST /api/v1/trainers
+
+Добавляет нового тренера в систему.
+
+## Тело запроса
+
+| Поле | Тип | Обязательное | Описание |
+|------|-----|-------------|----------|
+| `first_name` | string | да | Имя |
+| `last_name` | string | да | Фамилия |
+| `phone` | string | нет | Телефон |
+| `specialization` | string | нет | Специализация |
+| `bio` | string | нет | Описание / опыт |
+
+## Пример запроса
+
+```bash
+curl -X POST "https://your-domain.com/api/v1/trainers" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "first_name": "Алексей",
+    "last_name": "Смирнов",
+    "phone": "+7 (999) 777-88-99",
+    "specialization": "Бокс, Функциональный тренинг",
+    "bio": "КМС по боксу, 5 лет тренерского опыта"
+  }'
+```

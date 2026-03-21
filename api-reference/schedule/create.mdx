@@ -1,0 +1,38 @@
+---
+title: Создать занятие
+description: Добавление нового занятия в расписание
+---
+
+# POST /api/v1/classes
+
+Создаёт новое занятие в расписании.
+
+## Тело запроса
+
+| Поле | Тип | Обязательное | Описание |
+|------|-----|-------------|----------|
+| `name` | string | да | Название занятия |
+| `trainer_id` | uuid | да | ID тренера |
+| `room_id` | uuid | да | ID зала |
+| `start_time` | string | да | Время начала (ISO 8601) |
+| `end_time` | string | да | Время окончания |
+| `max_participants` | int | нет | Макс. участников (по умолчанию 20) |
+| `type` | string | нет | `group` или `personal` |
+| `is_recurring` | boolean | нет | Повторяющееся занятие |
+
+## Пример запроса
+
+```bash
+curl -X POST "https://your-domain.com/api/v1/classes" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "CrossFit",
+    "trainer_id": "...",
+    "room_id": "...",
+    "start_time": "2026-03-22T18:00:00Z",
+    "end_time": "2026-03-22T19:00:00Z",
+    "max_participants": 12,
+    "type": "group"
+  }'
+```

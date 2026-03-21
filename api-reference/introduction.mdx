@@ -1,33 +1,89 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: Обзор API
+description: REST API для FitCRM — управление данными фитнес-клуба
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+# API FitCRM
 
-## Welcome
+REST API для управления данными фитнес-клуба. API реализовано через Supabase + Next.js API Routes.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## Базовый URL
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+```
+https://your-domain.com/api/v1
+```
 
-## Authentication
+## Аутентификация
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+Все запросы требуют JWT-токен в заголовке:
+
+```
+Authorization: Bearer <your-jwt-token>
+```
+
+Токен получается при авторизации через Supabase Auth.
+
+## Формат ответов
+
+Успешный ответ:
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
+{
+  "data": [...],
+  "count": 42,
+  "page": 1,
+  "per_page": 20
+}
+```
+
+Ошибка:
+
+```json
+{
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "Клиент не найден"
   }
-]
+}
+```
+
+## Ресурсы API
+
+| Ресурс | Описание |
+|--------|----------|
+| `/api/v1/clients` | Управление клиентами |
+| `/api/v1/membership-types` | Типы абонементов |
+| `/api/v1/client-memberships` | Абонементы клиентов |
+| `/api/v1/trainers` | Тренеры |
+| `/api/v1/classes` | Занятия |
+| `/api/v1/bookings` | Бронирования |
+| `/api/v1/attendance` | Посещаемость |
+| `/api/v1/payments` | Платежи |
+| `/api/v1/rooms` | Залы |
+
+## HTTP-методы
+
+| Метод | Описание |
+|-------|----------|
+| `GET` | Получение данных |
+| `POST` | Создание записи |
+| `PATCH` | Обновление записи |
+| `DELETE` | Удаление записи |
+
+## Пагинация
+
+```
+GET /api/v1/clients?page=1&per_page=20
+```
+
+## Фильтрация
+
+```
+GET /api/v1/clients?status=active&search=Иван
+```
+
+## Сортировка
+
+```
+GET /api/v1/clients?sort=created_at&order=desc
 ```

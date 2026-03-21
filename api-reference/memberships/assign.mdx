@@ -1,0 +1,46 @@
+---
+title: Выдать абонемент клиенту
+description: Привязка абонемента к клиенту
+---
+
+# POST /api/v1/client-memberships
+
+Выдаёт абонемент клиенту. Автоматически рассчитывает дату окончания и количество посещений.
+
+## Тело запроса
+
+| Поле | Тип | Обязательное | Описание |
+|------|-----|-------------|----------|
+| `client_id` | uuid | да | ID клиента |
+| `membership_type_id` | uuid | да | ID типа абонемента |
+| `start_date` | string | нет | Дата начала (по умолчанию — сегодня) |
+
+## Пример запроса
+
+```bash
+curl -X POST "https://your-domain.com/api/v1/client-memberships" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "client_id": "550e8400-...",
+    "membership_type_id": "770e8400-...",
+    "start_date": "2026-03-21"
+  }'
+```
+
+## Пример ответа (201 Created)
+
+```json
+{
+  "data": {
+    "id": "880e8400-...",
+    "client_id": "550e8400-...",
+    "membership_type_id": "770e8400-...",
+    "start_date": "2026-03-21",
+    "end_date": "2026-04-20",
+    "visits_remaining": null,
+    "status": "active",
+    "is_frozen": false
+  }
+}
+```

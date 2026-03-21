@@ -1,0 +1,60 @@
+---
+title: Создать клиента
+description: Регистрация нового клиента в системе
+---
+
+# POST /api/v1/clients
+
+Создаёт нового клиента. Телефон должен быть уникальным.
+
+## Тело запроса
+
+| Поле | Тип | Обязательное | Описание |
+|------|-----|-------------|----------|
+| `first_name` | string | да | Имя |
+| `last_name` | string | да | Фамилия |
+| `phone` | string | да | Телефон (уникальный) |
+| `email` | string | нет | Email |
+| `birth_date` | string | нет | Дата рождения (YYYY-MM-DD) |
+| `gender` | string | нет | `male` или `female` |
+| `notes` | string | нет | Заметки |
+
+## Пример запроса
+
+```bash
+curl -X POST "https://your-domain.com/api/v1/clients" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "first_name": "Анна",
+    "last_name": "Сидорова",
+    "phone": "+7 (999) 987-65-43",
+    "email": "anna@example.com",
+    "birth_date": "1995-08-20",
+    "gender": "female"
+  }'
+```
+
+## Ответ (201 Created)
+
+```json
+{
+  "data": {
+    "id": "660e8400-e29b-41d4-a716-446655440001",
+    "first_name": "Анна",
+    "last_name": "Сидорова",
+    "phone": "+7 (999) 987-65-43",
+    "email": "anna@example.com",
+    "birth_date": "1995-08-20",
+    "gender": "female",
+    "created_at": "2026-03-21T14:00:00Z"
+  }
+}
+```
+
+## Ошибки
+
+| Код | Описание |
+|-----|----------|
+| 400 | Не указаны обязательные поля |
+| 409 | Клиент с таким телефоном уже существует |

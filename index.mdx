@@ -1,71 +1,67 @@
 ---
-title: Introduction
-description: "Welcome to the home of your new documentation"
+title: FitCRM — CRM-система для фитнес-клуба
+description: Проектная документация CRM-системы для управления фитнес-клубом среднего размера
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.png"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.png"
-  alt="Hero Dark"
-/>
+# FitCRM
 
-## Setting up
+**Современная CRM-система для фитнес-клубов** — управление клиентами, абонементами, расписанием, тренерами и платежами в одном месте.
 
-The first step to world-class documentation is setting up your editing environments.
+## Для кого этот проект
+
+Фитнес-клуб среднего размера:
+- **2-5 залов** (тренажёрный, групповые занятия, бассейн и т.д.)
+- **5-10 тренеров**
+- **200-1000 клиентов**
+
+## Ключевые возможности
 
 <CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
+  <Card title="Клиенты" icon="users">
+    База клиентов с полной историей посещений, абонементов и платежей
   </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
+  <Card title="Абонементы" icon="id-card">
+    Гибкая система абонементов: по времени, по посещениям, безлимитные
+  </Card>
+  <Card title="Расписание" icon="calendar">
+    Календарь групповых и персональных занятий с онлайн-бронированием
+  </Card>
+  <Card title="Платежи" icon="credit-card">
+    Учёт оплат, задолженностей, автоматические напоминания
+  </Card>
+  <Card title="Тренеры" icon="dumbbell">
+    Профили тренеров, расписание работы, нагрузка
+  </Card>
+  <Card title="Аналитика" icon="chart-line">
+    Дашборд с ключевыми метриками: выручка, посещаемость, удержание
   </Card>
 </CardGroup>
 
-## Make it yours
+## Стоимость владения
 
-Update your docs to your brand and add valuable content for the best user conversion.
+| Статья | Стоимость |
+|--------|-----------|
+| Supabase (бэкенд + БД) | $0/мес (Free tier) |
+| Vercel (хостинг) | $0/мес (Free tier) |
+| Домен | ~$10-15/год |
+| **Итого на старте** | **~$1/мес** |
+| При масштабировании | ~$45-70/мес |
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/content/components/accordions"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/customers"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+> Для сравнения: готовые CRM (Mindbody, Glofox) стоят $100-700/мес
+
+## Статус проекта
+
+<Steps>
+  <Step title="Документация и проектирование" status="current">
+    Описание модулей, схема БД, API-спецификация
+  </Step>
+  <Step title="MVP: Клиенты + Абонементы">
+    CRUD для клиентов, управление абонементами, базовый дашборд
+  </Step>
+  <Step title="Расписание + Тренеры">
+    Календарь занятий, бронирование, профили тренеров
+  </Step>
+  <Step title="Платежи + Аналитика">
+    Интеграция с платёжной системой, отчёты, уведомления
+  </Step>
+</Steps>

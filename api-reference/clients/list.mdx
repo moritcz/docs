@@ -1,0 +1,53 @@
+---
+title: Список клиентов
+description: Получение списка всех клиентов с фильтрацией и пагинацией
+---
+
+# GET /api/v1/clients
+
+Возвращает список клиентов с поддержкой поиска, фильтрации и пагинации.
+
+## Параметры запроса
+
+| Параметр | Тип | Описание |
+|----------|-----|----------|
+| `search` | string | Поиск по имени, фамилии или телефону |
+| `status` | string | Фильтр по статусу абонемента: `active`, `expired`, `none` |
+| `page` | int | Номер страницы (по умолчанию 1) |
+| `per_page` | int | Записей на странице (по умолчанию 20, макс. 100) |
+| `sort` | string | Поле сортировки: `created_at`, `last_name`, `last_visit` |
+| `order` | string | Направление: `asc` или `desc` |
+
+## Пример запроса
+
+```bash
+curl -X GET "https://your-domain.com/api/v1/clients?search=Иван&status=active&page=1" \
+  -H "Authorization: Bearer <token>"
+```
+
+## Пример ответа
+
+```json
+{
+  "data": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "first_name": "Иван",
+      "last_name": "Петров",
+      "phone": "+7 (999) 123-45-67",
+      "email": "ivan@example.com",
+      "birth_date": "1990-05-15",
+      "gender": "male",
+      "created_at": "2026-01-15T10:30:00Z",
+      "active_membership": {
+        "name": "Безлимит 30 дней",
+        "end_date": "2026-04-15",
+        "visits_remaining": null
+      }
+    }
+  ],
+  "count": 1,
+  "page": 1,
+  "per_page": 20
+}
+```

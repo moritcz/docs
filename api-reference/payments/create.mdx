@@ -1,0 +1,47 @@
+---
+title: Создать платёж
+description: Регистрация нового платежа
+---
+
+# POST /api/v1/payments
+
+Регистрирует платёж клиента.
+
+## Тело запроса
+
+| Поле | Тип | Обязательное | Описание |
+|------|-----|-------------|----------|
+| `client_id` | uuid | да | ID клиента |
+| `client_membership_id` | uuid | нет | ID абонемента (если оплата за абонемент) |
+| `amount` | decimal | да | Сумма |
+| `payment_method` | string | да | `cash`, `card`, `transfer` |
+| `notes` | string | нет | Комментарий |
+
+## Пример запроса
+
+```bash
+curl -X POST "https://your-domain.com/api/v1/payments" \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "client_id": "550e8400-...",
+    "client_membership_id": "880e8400-...",
+    "amount": 3500.00,
+    "payment_method": "card"
+  }'
+```
+
+## Ответ (201 Created)
+
+```json
+{
+  "data": {
+    "id": "...",
+    "client_id": "550e8400-...",
+    "amount": 3500.00,
+    "payment_method": "card",
+    "status": "completed",
+    "paid_at": "2026-03-21T14:00:00Z"
+  }
+}
+```

@@ -1,0 +1,35 @@
+---
+title: Обновить клиента
+description: Обновление данных клиента
+---
+
+# PATCH /api/v1/clients/:id
+
+Обновляет данные клиента. Отправляйте только изменяемые поля.
+
+## Пример запроса
+
+```bash
+curl -X PATCH "https://your-domain.com/api/v1/clients/550e8400-..." \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "new-email@example.com",
+    "notes": "Перешёл на утренние тренировки"
+  }'
+```
+
+## Ответ (200 OK)
+
+```json
+{
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "first_name": "Иван",
+    "last_name": "Петров",
+    "phone": "+7 (999) 123-45-67",
+    "email": "new-email@example.com",
+    "notes": "Перешёл на утренние тренировки"
+  }
+}
+```

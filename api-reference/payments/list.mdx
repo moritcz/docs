@@ -1,0 +1,42 @@
+---
+title: Список платежей
+description: Получение истории платежей
+---
+
+# GET /api/v1/payments
+
+Возвращает список платежей с фильтрацией.
+
+## Параметры запроса
+
+| Параметр | Тип | Описание |
+|----------|-----|----------|
+| `client_id` | uuid | Платежи конкретного клиента |
+| `date_from` | string | Начало периода |
+| `date_to` | string | Конец периода |
+| `status` | string | `completed`, `pending`, `refunded` |
+| `payment_method` | string | `cash`, `card`, `transfer` |
+
+## Пример ответа
+
+```json
+{
+  "data": [
+    {
+      "id": "...",
+      "client": {
+        "id": "...",
+        "first_name": "Иван",
+        "last_name": "Петров"
+      },
+      "amount": 3500.00,
+      "payment_method": "card",
+      "status": "completed",
+      "paid_at": "2026-03-21T10:00:00Z",
+      "membership_type": "Безлимит 30 дней"
+    }
+  ],
+  "total_amount": 3500.00,
+  "count": 1
+}
+```
